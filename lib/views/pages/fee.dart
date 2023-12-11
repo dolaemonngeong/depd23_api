@@ -41,6 +41,18 @@ class _FeePageState extends State<FeePage> {
     return city;
   }
 
+  Future<List<Costs>> getCosts(var originID, var destinationID, var weight, var courier) async {
+    ////
+    dynamic costs;
+    await MasterDataService.getCosts(originID, destinationID, weight, courier).then((value) {
+      setState(() {
+        costs = value;
+      });
+    });
+
+    return costs;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -68,10 +80,14 @@ class _FeePageState extends State<FeePage> {
                 child: Container(
                   width: double.infinity,
                   height: double.infinity,
+
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Origin"),
-                      Container(
+                      Row(
+                        children: [
+                        Text("Origin"),
+                        Container(
                         width: 240,
                         child: FutureBuilder<List<City>>(
                             future: cityDataOrigin,
@@ -107,11 +123,55 @@ class _FeePageState extends State<FeePage> {
                               }
                               return UiLoading.loadingSmall();
                             }),
-                      )
-                    ],
-                  ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                        Container(
+                        width: 240,
+                        child: FutureBuilder<List<City>>(
+                            future: cityDataOrigin,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return DropdownButton(
+                                    isExpanded: true,
+                                    value: selectedCityOrigin,
+                                    icon: Icon(Icons.arrow_drop_down),
+                                    iconSize: 30,
+                                    elevation: 4,
+                                    style: TextStyle(color: Colors.black),
+                                    hint: selectedCityOrigin == null
+                                        ? Text('Pilih kota')
+                                        : Text(selectedCityOrigin.cityName),
+                                    items: snapshot.data!
+                                        .map<DropdownMenuItem<City>>(
+                                            (City value) {
+                                      return DropdownMenuItem(
+                                          value: value,
+                                          child:
+                                              Text(value.cityName.toString()));
+                                    }).toList(),
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        selectedCityOrigin = newValue;
+                                        cityIdOrigin =
+                                            selectedCityOrigin.cityId;
+                                      });
+                                    });
+                              } else if (snapshot.hasError) {
+                                return Text("Tidak ada data");
+                              }
+                              return UiLoading.loadingSmall();
+                            }),
+                          )
+                        ],
+                      ),
+                    ]
+                  )
                 ),
               ),
+
               Flexible(
                 flex: 5,
                 child: Container(

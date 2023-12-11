@@ -43,4 +43,33 @@ class MasterDataService {
 
     return selectedCities;
   }
+  
+  static Future<List<Costs>> getCosts(var originID, destinationID, weight, courier) async {
+    var requestBody = json.encode({
+        "origin": originID,
+        "destination": destinationID,
+        "weight": weight,
+        "courier": courier
+    });
+
+    var response = await http.post(Uri.https(Const.baseURL, "/starter/cost"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'key': Const.apiKey,
+        },
+        body: requestBody
+    );
+
+    var job = json.decode(response.body);
+
+    List<Costs> result = [];
+
+    if (response.statusCode == 200) {
+      result = (job['rajaongkir']['results'] as List)
+          .map((e) => Costs.fromJson(e))
+          .toList();
+    }
+
+    return result;
+  }
 }
