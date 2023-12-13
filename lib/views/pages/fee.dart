@@ -12,6 +12,8 @@ class _FeePageState extends State<FeePage> {
   ///
   bool isLoading = false;
 
+  bool isLoadingCity = false;
+
   dynamic tipeKurir;
   
   dynamic provinceData;
@@ -100,7 +102,6 @@ class _FeePageState extends State<FeePage> {
       body: Stack(
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,               
             children: [
               Flexible(
                 flex: 2,
@@ -109,12 +110,13 @@ class _FeePageState extends State<FeePage> {
                   width: double.infinity,
                   height: double.infinity,
                   child: Column(
-                    
+                    crossAxisAlignment: CrossAxisAlignment.center,     
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [ 
                           Container(
-                          width: 150,
+                          width: 180,
                           child: DropdownButton<String>(
                             value: tipeKurir,
                             hint: tipeKurir == null
@@ -134,8 +136,11 @@ class _FeePageState extends State<FeePage> {
                             }).toList(),
                           )
                         ),
+                        
+                        SizedBox(width: 10),
+
                         Container(
-                          width: 150,  // Adjust width as needed
+                          width: 180,  
                           child: TextFormField(
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
@@ -158,13 +163,17 @@ class _FeePageState extends State<FeePage> {
 
                       Row(
                         children: [
-                          Text(
-                            "Origin"
-                            )
+                          Container(
+                            margin: const EdgeInsets.all(10.0),
+                            child: const Text(
+                              "Origin"
+                              ),
+                          )
                           ],
                       ),
 
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
                             width: 180,
@@ -203,6 +212,9 @@ class _FeePageState extends State<FeePage> {
                               } 
                             ),
                           ),
+                          
+                        SizedBox(width: 10),
+
                           Container(
                             width: 180,
                             child: FutureBuilder<List<City>>(
@@ -236,8 +248,16 @@ class _FeePageState extends State<FeePage> {
                                         });
                                   } else if (snapshot.hasError) {
                                     return Text("Tidak ada data");
+                                  } else if (snapshot.connectionState == ConnectionState.waiting){
+                                    return UiLoading.loadingSmall();
                                   }
-                                  return UiLoading.loadingSmall();
+                                   return DropdownButton(
+                                    items: null,
+                                    onChanged: null,
+                                    disabledHint: Text("Pilih Kota"),
+                                    isExpanded: true,
+                                  );
+                                  // return UiLoading.loadingSmall();
                                 }),
                           )
                         ]
@@ -245,12 +265,16 @@ class _FeePageState extends State<FeePage> {
 
                       Row(
                         children: [
-                          Text(
-                            "Destination")
+                          Container(
+                            margin: const EdgeInsets.all(10.0),
+                            child: const Text(
+                              "Destination"),
+                          )
                           ],
                       ),
 
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
                             width: 180,
@@ -289,9 +313,11 @@ class _FeePageState extends State<FeePage> {
                               } 
                             ),
                           ),
+                          
+                        SizedBox(width: 10),
 
                           Container(
-                            width: 100,
+                            width: 180,
                             child: FutureBuilder<List<City>>(
                               future: cityDataDestination,
                               builder: (context, snapshot){
@@ -323,14 +349,23 @@ class _FeePageState extends State<FeePage> {
                                     });
                                 }else if (snapshot.hasError){
                                   return Text("Tidak ada data");
-                                }
-                                return UiLoading.loadingSmall();
+                                }else if (snapshot.connectionState == ConnectionState.waiting){
+                                    return UiLoading.loadingSmall();
+                                  }
+                                   return DropdownButton(
+                                    items: null,
+                                    hint: Text("Pilih Kota"),
+                                    onChanged: null,
+                                    isExpanded: true,
+                                  );
+                                  //
                               } 
                             ),
                           ),
                         ]
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -383,7 +418,7 @@ class _FeePageState extends State<FeePage> {
                 )
               ),
               Flexible(
-                flex: 3,
+                flex: 2,
                 child: Container(
                 width: double.infinity,
                 height: double.infinity,
