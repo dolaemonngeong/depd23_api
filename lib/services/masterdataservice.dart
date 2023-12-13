@@ -46,10 +46,10 @@ class MasterDataService {
   
   static Future<List<Costs>> getCosts(var originID, destinationID, weight, courier) async {
     var requestBody = json.encode({
-        "origin": originID,
-        "destination": destinationID,
+        "origin": originID.toString(),
+        "destination": destinationID.toString(),
         "weight": weight,
-        "courier": courier
+        "courier": courier.toString()
     });
 
     var response = await http.post(Uri.https(Const.baseURL, "/starter/cost"),
@@ -64,10 +64,15 @@ class MasterDataService {
 
     List<Costs> result = [];
 
+    print("Status: ${response.statusCode}");
+
     if (response.statusCode == 200) {
-      result = (job['rajaongkir']['results'] as List)
+      result = (job['rajaongkir']['results'][0]['costs'] as List)
           .map((e) => Costs.fromJson(e))
           .toList();
+      print(result);
+    }else{
+      print("Status: ${response.statusCode}");
     }
 
     return result;
